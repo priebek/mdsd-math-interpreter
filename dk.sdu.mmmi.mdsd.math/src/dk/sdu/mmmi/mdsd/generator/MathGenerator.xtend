@@ -3,13 +3,7 @@
  */
 package dk.sdu.mmmi.mdsd.generator
 
-import dk.sdu.mmmi.mdsd.math.Div
-import dk.sdu.mmmi.mdsd.math.Exp
 import dk.sdu.mmmi.mdsd.math.MathExp
-import dk.sdu.mmmi.mdsd.math.Minus
-import dk.sdu.mmmi.mdsd.math.Mult
-import dk.sdu.mmmi.mdsd.math.Plus
-import dk.sdu.mmmi.mdsd.math.Primary
 import java.util.HashMap
 import java.util.Map
 import javax.swing.JOptionPane
@@ -17,6 +11,11 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import dk.sdu.mmmi.mdsd.math.Plus
+import dk.sdu.mmmi.mdsd.math.Minus
+import dk.sdu.mmmi.mdsd.math.Mult
+import dk.sdu.mmmi.mdsd.math.Div
+import dk.sdu.mmmi.mdsd.math.Expression
 
 /**
  * Generates code from your model files on save.
@@ -41,23 +40,20 @@ class MathGenerator extends AbstractGenerator {
 	//
 	
 	def static compute(MathExp math) { 
-		math.exp.computeExp
+		for (entity : math.entities) {
+			variables.put(entity.name, entity.exp.computeExp)
+		}
 		return variables
 	}
 	
-	def static int computeExp(Exp exp) {
-		val left = exp.left.computePrim
-		switch exp.operator {
-			Plus: left+exp.right.computeExp
-			Minus: left-exp.right.computeExp
-			Mult: left*exp.right.computeExp
-			Div: left/exp.right.computeExp
-			default: left
+	def static int computeExp(Expression exp) {
+		switch exp {
+			Plus: exp.left.computeExp + exp.right.computeExp
+			Minus: exp.left.computeExp - exp.right.computeExp
+			Mult: exp.left.computeExp * exp.right.computeExp
+			Div: exp.left.computeExp / exp.right.computeExp
+			default: 0
 		}
-	}
-	
-	def static int computePrim(Primary factor) { 
-		87
 	}
 
 	def void displayPanel(Map<String, Integer> result) {

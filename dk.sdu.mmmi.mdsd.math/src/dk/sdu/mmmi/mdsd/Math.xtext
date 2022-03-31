@@ -3,15 +3,27 @@ grammar dk.sdu.mmmi.mdsd.Math with org.eclipse.xtext.common.Terminals
 generate math "http://www.sdu.dk/mmmi/mdsd/Math"
 
 MathExp:
-	'var' name=ID '=' exp=Exp
+	entities += Entity*
 ;
 
-Exp: // Illegal due to left recursion
-	left=Number (operator=ExpOp right=Exp)?
+Entity:
+	'var' name=ID '=' exp=Plus
 ;
 
-ExpOp:
-	{Plus} '+' | {Minus} '-'	 | {Mult} '*' | {Div} '/'	
+Plus returns Expression:
+	Minus ({Plus.left = current} '+' right = Minus)*
+;
+
+Minus returns Expression:
+	Mult ({Minus.left = current} '-' right = Mult)*
+;
+
+Mult returns Expression:
+	Div ({Mult.left = current} '*' right = Div)*
+;
+
+Div returns Expression:
+	Primary ({Div.left = current} '/' right = Primary)*
 ;
 
 Primary:
@@ -19,7 +31,7 @@ Primary:
 ;
 
 Parenthesis:
-	'(' exp=Exp ')'
+	'(' exp=Plus ')'
 ;
 
 Number:
