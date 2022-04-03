@@ -28,7 +28,7 @@ import dk.sdu.mmmi.mdsd.math.Number
  */
 class MathGenerator extends AbstractGenerator {
 
-	static Map<String, Integer> variables = new HashMap();
+	static Map<String, Integer> variables
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val math = resource.allContents.filter(MathExp).next
@@ -44,8 +44,9 @@ class MathGenerator extends AbstractGenerator {
 	//
 	
 	def static compute(MathExp math) { 
+		variables = new HashMap()
 		for (entity : math.entities) {
-			variables.put(entity.name, entity.exp.computeExp(new HashMap<String, Integer>()))
+			variables.put(entity.name, entity.exp.computeExp(new HashMap()))
 		}
 		return variables
 	}
