@@ -20,9 +20,14 @@ class MathValidator extends AbstractMathValidator {
 	@Check
 	def duplicateGlobalVariable(GlobalEntity gEntity) {
 		val entities = (EcoreUtil2.getRootContainer(gEntity) as MathExp).entities;
+		var found = false;
 		for (entity : entities) {
 			if (entity.name == gEntity.name) {
-				error("Duplicate global variable", gEntity, MathPackage.Literals.MY_ENTITY__NAME)
+				if (found) {
+					error("Duplicate global variable", gEntity, MathPackage.Literals.MY_ENTITY__NAME)
+				} else {
+					found = true;
+				}
 			}
 		}
 	}
