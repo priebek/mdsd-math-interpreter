@@ -3,24 +3,25 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="math" nsURI="http://www.sdu.dk/mmmi/mdsd/Math" nsPrefix="math">
   <eClassifiers xsi:type="ecore:EClass" name="MathExp">
     <eStructuralFeatures xsi:type="ecore:EReference" name="entities" upperBound="-1"
-        eType="#//Entity" containment="true"/>
+        eType="#//MyEntity" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Entity">
+  <eClassifiers xsi:type="ecore:EClass" name="MyEntity" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="exp" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Expression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Primary" eSuperTypes="#//Expression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Parenthesis" eSuperTypes="#//Primary">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exp" eType="#//Expression"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Number" eSuperTypes="#//Primary">
+  <eClassifiers xsi:type="ecore:EClass" name="Number" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VariableUse" eSuperTypes="#//Primary">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" eType="#//MathExp"/>
+  <eClassifiers xsi:type="ecore:EClass" name="VariableUse" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" eType="#//MyEntity"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GlobalEntity" eSuperTypes="#//MyEntity"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LocalEntity" eSuperTypes="#//MyEntity">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="localExp" eType="#//Expression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Plus" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//Expression"
@@ -43,7 +44,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Div" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//Expression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Primary"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

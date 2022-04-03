@@ -9,20 +9,21 @@
     <genClasses ecoreClass="Math.ecore#//MathExp">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//MathExp/entities"/>
     </genClasses>
-    <genClasses ecoreClass="Math.ecore#//Entity">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Math.ecore#//Entity/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//Entity/exp"/>
+    <genClasses ecoreClass="Math.ecore#//MyEntity">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Math.ecore#//MyEntity/name"/>
     </genClasses>
-    <genClasses ecoreClass="Math.ecore#//Expression"/>
-    <genClasses ecoreClass="Math.ecore#//Primary"/>
-    <genClasses ecoreClass="Math.ecore#//Parenthesis">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//Parenthesis/exp"/>
+    <genClasses ecoreClass="Math.ecore#//Expression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//Expression/exp"/>
     </genClasses>
     <genClasses ecoreClass="Math.ecore#//Number">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Math.ecore#//Number/value"/>
     </genClasses>
     <genClasses ecoreClass="Math.ecore#//VariableUse">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Math.ecore#//VariableUse/ref"/>
+    </genClasses>
+    <genClasses ecoreClass="Math.ecore#//GlobalEntity"/>
+    <genClasses ecoreClass="Math.ecore#//LocalEntity">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//LocalEntity/localExp"/>
     </genClasses>
     <genClasses ecoreClass="Math.ecore#//Plus">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//Plus/left"/>

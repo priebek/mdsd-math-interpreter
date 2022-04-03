@@ -3,6 +3,16 @@
  */
 package dk.sdu.mmmi.mdsd.scoping
 
+import org.eclipse.xtext.scoping.IScope
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EReference
+import dk.sdu.mmmi.mdsd.math.MathPackage
+import dk.sdu.mmmi.mdsd.math.LocalEntity
+import org.eclipse.xtext.EcoreUtil2
+import dk.sdu.mmmi.mdsd.math.MyEntity
+import org.eclipse.xtext.scoping.Scopes
+import dk.sdu.mmmi.mdsd.math.GlobalEntity
+import dk.sdu.mmmi.mdsd.math.MathExp
 
 /**
  * This class contains custom scoping description.
@@ -11,5 +21,34 @@ package dk.sdu.mmmi.mdsd.scoping
  * on how and when to use it.
  */
 class MathScopeProvider extends AbstractMathScopeProvider {
+
+	override IScope getScope(EObject context, EReference reference) {
+		switch (reference) {
+			case MathPackage.Literals.VARIABLE_USE__REF: {
+				val entity = EcoreUtil2.getContainerOfType(context, MyEntity);
+				if (entity instanceof LocalEntity) {
+					return Scopes.scopeFor(#[entity], getEntityScope(entity));
+				} else {
+					return getGlobalEntityScope(entity as GlobalEntity);
+				}
+			}
+		}
+		return super.getScope(context, reference);
+	}
+	
+	def IScope getEntityScope(MyEntity entity) {
+		val next = EcoreUtil2.getContainerOfType(entity.eContainer, MyEntity);
+		if (next instanceof LocalEntity) {
+			return Scopes.scopeFor(#[next], getEntityScope(next));
+		} else {
+			return getGlobalEntityScope(next as GlobalEntity);
+		}
+	}
+	
+	def IScope getGlobalEntityScope(GlobalEntity entity) {
+		val mathExp = EcoreUtil2.getRootContainer(entity) as MathExp;
+		val globalEntity = mathExp.entities.filter [it.name !== entity.name].toList;
+		return Scopes.scopeFor(globalEntity)
+	}
 
 }
