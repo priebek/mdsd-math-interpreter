@@ -20,6 +20,7 @@ import dk.sdu.mmmi.mdsd.math.MyEntity
 import dk.sdu.mmmi.mdsd.math.LocalEntity
 import dk.sdu.mmmi.mdsd.math.GlobalEntity
 import dk.sdu.mmmi.mdsd.math.Number
+import dk.sdu.mmmi.mdsd.math.Expression
 
 /**
  * Generates code from your model files on save.
@@ -51,32 +52,15 @@ class MathGenerator extends AbstractGenerator {
 		return variables
 	}
 	
-//	def static int computeExp(Expression exp) {
-//		switch exp {
-//			Plus: exp.left.computeExp + exp.right.computeExp
-//			Minus: exp.left.computeExp - exp.right.computeExp
-//			Mult: exp.left.computeExp * exp.right.computeExp
-//			Div: exp.left.computeExp / exp.right.computeExp
-//			default: 0
-
-	def dispatch static int computeExp(Plus exp, HashMap<String, Integer> localEntity) {
-		exp.left.computeExp(localEntity) + exp.right.computeExp(localEntity)
-	}
-	
-	def dispatch static int computeExp(Minus exp, HashMap<String, Integer> localEntity) {
-		exp.left.computeExp(localEntity) - exp.right.computeExp(localEntity)
-	}
-	
-	def dispatch static int computeExp(Mult exp, HashMap<String, Integer> localEntity) {
-		exp.left.computeExp(localEntity) * exp.right.computeExp(localEntity)
-	}
-	
-	def dispatch static int computeExp(Div exp, HashMap<String, Integer> localEntity) {
-		exp.left.computeExp(localEntity) / exp.right.computeExp(localEntity)
-	}
-	
-	def dispatch static int computeExp(Number number, HashMap<String, Integer> localEntity) {
-		number.value
+	def dispatch static int computeExp(Expression exp, HashMap<String, Integer> localEntity) {
+		switch exp {
+			Plus: exp.left.computeExp(localEntity) + exp.right.computeExp(localEntity)
+			Minus: exp.left.computeExp(localEntity) - exp.right.computeExp(localEntity)
+			Mult: exp.left.computeExp(localEntity) * exp.right.computeExp(localEntity)
+			Div: exp.left.computeExp(localEntity) / exp.right.computeExp(localEntity)
+			Number: exp.value
+			default: 0
+		}
 	}
 	
 	def dispatch static int computeExp(MyEntity entity, HashMap<String, Integer> localEntity) {
