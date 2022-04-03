@@ -67,7 +67,6 @@ class MathGenerator extends AbstractGenerator {
 					GlobalEntity: return globalName !== null ? globalName : x.ref.computeExp(localMap)
 				}
 			}
-			default: 0
 		}
 	}
 
