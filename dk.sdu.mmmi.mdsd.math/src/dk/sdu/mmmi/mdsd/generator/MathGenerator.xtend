@@ -16,7 +16,6 @@ import dk.sdu.mmmi.mdsd.math.Minus
 import dk.sdu.mmmi.mdsd.math.Mult
 import dk.sdu.mmmi.mdsd.math.Div
 import dk.sdu.mmmi.mdsd.math.VariableUse
-import dk.sdu.mmmi.mdsd.math.MyEntity
 import dk.sdu.mmmi.mdsd.math.LocalEntity
 import dk.sdu.mmmi.mdsd.math.GlobalEntity
 import dk.sdu.mmmi.mdsd.math.Number
@@ -47,7 +46,7 @@ class MathGenerator extends AbstractGenerator {
 		return variables
 	}
 
-	def dispatch static int computeExp(Expression exp, HashMap<String, Integer> localEntity) {
+	def static int computeExp(Expression exp, HashMap<String, Integer> localEntity) {
 		switch exp {
 			Plus: exp.left.computeExp(localEntity) + exp.right.computeExp(localEntity)
 			Minus: exp.left.computeExp(localEntity) - exp.right.computeExp(localEntity)
@@ -55,22 +54,20 @@ class MathGenerator extends AbstractGenerator {
 			Div: exp.left.computeExp(localEntity) / exp.right.computeExp(localEntity)
 			Number: exp.value
 			GlobalEntity: exp.exp.computeExp(localEntity) // GlobalEntity.exp...
+			LocalEntity: {
+				val tmpMap = new HashMap(localEntity)
+				tmpMap.put(exp.name, exp.localExp.computeExp(tmpMap))
+				exp.exp.computeExp(tmpMap) // LocalEntity.exp
+			}
+			VariableUse: {
+				val entity = variables.get(exp.ref.name)
+				val lEntity = localEntity.get(exp.ref.name)
+				switch exp.ref {
+					LocalEntity: return lEntity !== null ? lEntity : entity
+					GlobalEntity: return entity !== null ? entity : exp.ref.computeExp(localEntity)
+				}
+			}
 			default: 0
-		}
-	}
-
-	def dispatch static int computeExp(LocalEntity entity, HashMap<String, Integer> localEntity) {
-		val n = new HashMap(localEntity)
-		n.put(entity.name, entity.localExp.computeExp(n))
-		entity.exp.computeExp(n)
-	}
-
-	def dispatch static int computeExp(VariableUse use, HashMap<String, Integer> localEntity) {
-		val entity = variables.get(use.ref.name)
-		val lEntity = localEntity.get(use.ref.name)
-		switch use.ref {
-			LocalEntity: return lEntity !== null ? lEntity : entity
-			GlobalEntity: return entity !== null ? entity : use.ref.computeExp(localEntity)
 		}
 	}
 
