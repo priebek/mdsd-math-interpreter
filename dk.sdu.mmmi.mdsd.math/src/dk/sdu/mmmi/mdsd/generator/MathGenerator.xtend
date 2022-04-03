@@ -54,25 +54,23 @@ class MathGenerator extends AbstractGenerator {
 			Mult: exp.left.computeExp(localEntity) * exp.right.computeExp(localEntity)
 			Div: exp.left.computeExp(localEntity) / exp.right.computeExp(localEntity)
 			Number: exp.value
+			GlobalEntity: exp.exp.computeExp(localEntity) // GlobalEntity.exp...
 			default: 0
 		}
 	}
 
-	def dispatch static int computeExp(MyEntity entity, HashMap<String, Integer> localEntity) {
+	def dispatch static int computeExp(LocalEntity entity, HashMap<String, Integer> localEntity) {
 		val n = new HashMap(localEntity)
-		if (entity instanceof LocalEntity) {
-			n.put(entity.name, entity.localExp.computeExp(n))
-		}
+		n.put(entity.name, entity.localExp.computeExp(n))
 		entity.exp.computeExp(n)
 	}
 
 	def dispatch static int computeExp(VariableUse use, HashMap<String, Integer> localEntity) {
 		val entity = variables.get(use.ref.name)
 		val lEntity = localEntity.get(use.ref.name)
-		if (use.ref instanceof LocalEntity) {
-			return lEntity !== null ? lEntity : entity
-		} else if (use.ref instanceof GlobalEntity) {
-			return entity !== null ? entity : use.ref.computeExp(localEntity)
+		switch use.ref {
+			LocalEntity: return lEntity !== null ? lEntity : entity
+			GlobalEntity: return entity !== null ? entity : use.ref.computeExp(localEntity)
 		}
 	}
 
