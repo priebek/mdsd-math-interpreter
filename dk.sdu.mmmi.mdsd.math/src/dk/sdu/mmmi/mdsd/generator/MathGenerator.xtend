@@ -60,11 +60,11 @@ class MathGenerator extends AbstractGenerator {
 				x.exp.computeExp(tmpMap)
 			}
 			VariableUse: {
-				val entity = variables.get(x.ref.name)
-				val lEntity = localMap.get(x.ref.name)
+				val globalName = variables.get(x.ref.name)
+				val localName = localMap.get(x.ref.name)
 				switch x.ref {
-					LocalEntity: return lEntity !== null ? lEntity : entity
-					GlobalEntity: return entity !== null ? entity : x.ref.computeExp(localMap)
+					LocalEntity: return localName !== null ? localName : globalName
+					GlobalEntity: return globalName !== null ? globalName : x.ref.computeExp(localMap)
 				}
 			}
 			default: 0

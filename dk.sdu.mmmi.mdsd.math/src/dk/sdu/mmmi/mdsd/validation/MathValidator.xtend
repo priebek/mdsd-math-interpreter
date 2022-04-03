@@ -16,16 +16,6 @@ import dk.sdu.mmmi.mdsd.math.MathPackage
  */
 class MathValidator extends AbstractMathValidator {
 
-//	public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					MathPackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
-//		}
-//	}
 	@Check
 	def duplicateGlobalVariable(GlobalEntity gEntity) {
 		val entities = (EcoreUtil2.getRootContainer(gEntity) as MathExp).entities;
