@@ -46,25 +46,25 @@ class MathGenerator extends AbstractGenerator {
 		return variables
 	}
 
-	def static int computeExp(Expression exp, HashMap<String, Integer> localEntity) {
-		switch exp {
-			Plus: exp.left.computeExp(localEntity) + exp.right.computeExp(localEntity)
-			Minus: exp.left.computeExp(localEntity) - exp.right.computeExp(localEntity)
-			Mult: exp.left.computeExp(localEntity) * exp.right.computeExp(localEntity)
-			Div: exp.left.computeExp(localEntity) / exp.right.computeExp(localEntity)
-			Number: exp.value
-			GlobalEntity: exp.exp.computeExp(localEntity) // GlobalEntity.exp...
+	def static int computeExp(Expression x, HashMap<String, Integer> localMap) {
+		switch x {
+			Plus: x.left.computeExp(localMap) + x.right.computeExp(localMap)
+			Minus: x.left.computeExp(localMap) - x.right.computeExp(localMap)
+			Mult: x.left.computeExp(localMap) * x.right.computeExp(localMap)
+			Div: x.left.computeExp(localMap) / x.right.computeExp(localMap)
+			Number: x.value
+			GlobalEntity: x.exp.computeExp(localMap)
 			LocalEntity: {
-				val tmpMap = new HashMap(localEntity)
-				tmpMap.put(exp.name, exp.localExp.computeExp(tmpMap))
-				exp.exp.computeExp(tmpMap) // LocalEntity.exp
+				val tmpMap = new HashMap(localMap)
+				tmpMap.put(x.name, x.localExp.computeExp(tmpMap))
+				x.exp.computeExp(tmpMap)
 			}
 			VariableUse: {
-				val entity = variables.get(exp.ref.name)
-				val lEntity = localEntity.get(exp.ref.name)
-				switch exp.ref {
+				val entity = variables.get(x.ref.name)
+				val lEntity = localMap.get(x.ref.name)
+				switch x.ref {
 					LocalEntity: return lEntity !== null ? lEntity : entity
-					GlobalEntity: return entity !== null ? entity : exp.ref.computeExp(localEntity)
+					GlobalEntity: return entity !== null ? entity : x.ref.computeExp(localMap)
 				}
 			}
 			default: 0
