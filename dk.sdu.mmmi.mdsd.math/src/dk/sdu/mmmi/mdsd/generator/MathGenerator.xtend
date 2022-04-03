@@ -30,28 +30,23 @@ import dk.sdu.mmmi.mdsd.math.Expression
 class MathGenerator extends AbstractGenerator {
 
 	static Map<String, Integer> variables
-	
+
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val math = resource.allContents.filter(MathExp).next
 		val result = math.compute
-		
+
 		// You can replace with hovering, see Bettini Chapter 8
 		result.displayPanel
 	}
-	
-	//
-	// Compute function: computes value of expression
-	// Note: written according to illegal left-recursive grammar, requires fix
-	//
-	
-	def static compute(MathExp math) { 
+
+	def static compute(MathExp math) {
 		variables = new HashMap()
 		for (entity : math.entities) {
 			variables.put(entity.name, entity.exp.computeExp(new HashMap()))
 		}
 		return variables
 	}
-	
+
 	def dispatch static int computeExp(Expression exp, HashMap<String, Integer> localEntity) {
 		switch exp {
 			Plus: exp.left.computeExp(localEntity) + exp.right.computeExp(localEntity)
@@ -62,7 +57,7 @@ class MathGenerator extends AbstractGenerator {
 			default: 0
 		}
 	}
-	
+
 	def dispatch static int computeExp(MyEntity entity, HashMap<String, Integer> localEntity) {
 		val n = new HashMap(localEntity)
 		if (entity instanceof LocalEntity) {
@@ -70,7 +65,7 @@ class MathGenerator extends AbstractGenerator {
 		}
 		entity.exp.computeExp(n)
 	}
-	
+
 	def dispatch static int computeExp(VariableUse use, HashMap<String, Integer> localEntity) {
 		val entity = variables.get(use.ref.name)
 		val lEntity = localEntity.get(use.ref.name)
@@ -84,10 +79,10 @@ class MathGenerator extends AbstractGenerator {
 	def void displayPanel(Map<String, Integer> result) {
 		var resultString = ""
 		for (entry : result.entrySet()) {
-         	resultString += "var " + entry.getKey() + " = " + entry.getValue() + "\n"
-        }
-		
-		JOptionPane.showMessageDialog(null, resultString ,"Math Language", JOptionPane.INFORMATION_MESSAGE)
+			resultString += "var " + entry.getKey() + " = " + entry.getValue() + "\n"
+		}
+
+		JOptionPane.showMessageDialog(null, resultString, "Math Language", JOptionPane.INFORMATION_MESSAGE)
 	}
 
 }
