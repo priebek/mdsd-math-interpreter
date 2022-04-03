@@ -15,7 +15,11 @@ import dk.sdu.mmmi.mdsd.math.Plus
 import dk.sdu.mmmi.mdsd.math.Minus
 import dk.sdu.mmmi.mdsd.math.Mult
 import dk.sdu.mmmi.mdsd.math.Div
-import dk.sdu.mmmi.mdsd.math.Expression
+import dk.sdu.mmmi.mdsd.math.VariableUse
+import dk.sdu.mmmi.mdsd.math.MyEntity
+import dk.sdu.mmmi.mdsd.math.LocalEntity
+import dk.sdu.mmmi.mdsd.math.GlobalEntity
+import dk.sdu.mmmi.mdsd.math.Number
 
 /**
  * Generates code from your model files on save.
@@ -41,18 +45,54 @@ class MathGenerator extends AbstractGenerator {
 	
 	def static compute(MathExp math) { 
 		for (entity : math.entities) {
-			variables.put(entity.name, entity.exp.computeExp)
+			variables.put(entity.name, entity.exp.computeExp(new HashMap<String, Integer>()))
 		}
 		return variables
 	}
 	
-	def static int computeExp(Expression exp) {
-		switch exp {
-			Plus: exp.left.computeExp + exp.right.computeExp
-			Minus: exp.left.computeExp - exp.right.computeExp
-			Mult: exp.left.computeExp * exp.right.computeExp
-			Div: exp.left.computeExp / exp.right.computeExp
-			default: 0
+//	def static int computeExp(Expression exp) {
+//		switch exp {
+//			Plus: exp.left.computeExp + exp.right.computeExp
+//			Minus: exp.left.computeExp - exp.right.computeExp
+//			Mult: exp.left.computeExp * exp.right.computeExp
+//			Div: exp.left.computeExp / exp.right.computeExp
+//			default: 0
+
+	def dispatch static int computeExp(Plus exp, HashMap<String, Integer> localEntity) {
+		exp.left.computeExp(localEntity) + exp.right.computeExp(localEntity)
+	}
+	
+	def dispatch static int computeExp(Minus exp, HashMap<String, Integer> localEntity) {
+		exp.left.computeExp(localEntity) - exp.right.computeExp(localEntity)
+	}
+	
+	def dispatch static int computeExp(Mult exp, HashMap<String, Integer> localEntity) {
+		exp.left.computeExp(localEntity) * exp.right.computeExp(localEntity)
+	}
+	
+	def dispatch static int computeExp(Div exp, HashMap<String, Integer> localEntity) {
+		exp.left.computeExp(localEntity) / exp.right.computeExp(localEntity)
+	}
+	
+	def dispatch static int computeExp(Number number, HashMap<String, Integer> localEntity) {
+		number.value
+	}
+	
+	def dispatch static int computeExp(MyEntity entity, HashMap<String, Integer> localEntity) {
+		val n = new HashMap(localEntity)
+		if (entity instanceof LocalEntity) {
+			n.put(entity.name, entity.localExp.computeExp(n))
+		}
+		entity.exp.computeExp(n)
+	}
+	
+	def dispatch static int computeExp(VariableUse use, HashMap<String, Integer> localEntity) {
+		val entity = variables.get(use.ref.name)
+		val lEntity = localEntity.get(use.ref.name)
+		if (use.ref instanceof LocalEntity) {
+			return lEntity !== null ? lEntity : entity
+		} else if (use.ref instanceof GlobalEntity) {
+			return entity !== null ? entity : use.ref.computeExp(localEntity)
 		}
 	}
 

@@ -3,11 +3,15 @@ grammar dk.sdu.mmmi.mdsd.Math with org.eclipse.xtext.common.Terminals
 generate math "http://www.sdu.dk/mmmi/mdsd/Math"
 
 MathExp:
-	entities += Entity*
+	entities += GlobalEntity*
 ;
 
-Entity:
-	'var' name=ID '=' exp=Plus
+GlobalEntity returns MyEntity:
+	{GlobalEntity} 'var' name=ID '=' exp=Plus
+;
+
+LocalEntity returns MyEntity:
+	{LocalEntity} 'let' name=ID '=' localExp=Plus 'in' exp=Plus 'end'
 ;
 
 Plus returns Expression:
@@ -26,11 +30,11 @@ Div returns Expression:
 	Primary ({Div.left = current} '/' right = Primary)*
 ;
 
-Primary:
-	Number | Parenthesis | VariableUse
+Primary returns Expression:
+	Number | Parenthesis | VariableUse | LocalEntity
 ;
 
-Parenthesis:
+Parenthesis returns Expression:
 	'(' exp=Plus ')'
 ;
 
@@ -39,5 +43,5 @@ Number:
 ;
 
 VariableUse:
-	ref = [MathExp]
+	ref = [MyEntity]
 ;
