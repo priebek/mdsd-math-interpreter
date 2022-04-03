@@ -11,10 +11,9 @@
     </genClasses>
     <genClasses ecoreClass="Math.ecore#//MyEntity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Math.ecore#//MyEntity/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//MyEntity/exp"/>
     </genClasses>
-    <genClasses ecoreClass="Math.ecore#//Expression">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//Expression/exp"/>
-    </genClasses>
+    <genClasses ecoreClass="Math.ecore#//Expression"/>
     <genClasses ecoreClass="Math.ecore#//Number">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Math.ecore#//Number/value"/>
     </genClasses>

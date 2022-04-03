@@ -35,7 +35,7 @@ Primary returns Expression:
 ;
 
 Parenthesis returns Expression:
-	'(' exp=Plus ')'
+	'(' Plus ')'
 ;
 
 Number:
